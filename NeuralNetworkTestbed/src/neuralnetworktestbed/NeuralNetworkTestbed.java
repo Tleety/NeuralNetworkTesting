@@ -30,7 +30,7 @@ public class NeuralNetworkTestbed {
         
         System.out.println("Training our simple neural network over 10 000 iterations");
         
-        simNN.train(trainingInputSet, trainingAnswers, 200);
+        simNN.train(trainingInputSet, trainingAnswers, 10000);
         
         System.out.print("Weights After training: ");
         simNN.PrintSynapseWeights();

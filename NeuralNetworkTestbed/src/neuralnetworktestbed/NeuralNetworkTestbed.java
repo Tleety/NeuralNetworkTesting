@@ -6,7 +6,7 @@
 
 package neuralnetworktestbed;
 
-
+import Jama.*;
 /**
  *
  * @author Tobias Dahl & Viktor Ljung

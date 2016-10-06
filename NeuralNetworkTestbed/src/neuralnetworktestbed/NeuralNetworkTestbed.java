@@ -9,7 +9,7 @@ public class NeuralNetworkTestbed {
     public static void main(String[] args) {
         
         //RunSimpleNN(10000);
-        RunTwoLayerNN(100000);
+        RunTwoLayerNN(1000);
     }
     
     private static void RunSimpleNN(int iterations) {
@@ -64,9 +64,9 @@ public class NeuralNetworkTestbed {
             { 0.34093502}
         };
         
-        NeuralLayer nl1 = new NeuralLayer(4, 3);
+        NeuralLayer nl1 = new NeuralLayer(8, 3);
         //nl1.synapsWeights = new SimpleMatrix(l1);
-        NeuralLayer nl2 = new NeuralLayer(1, 4);
+        NeuralLayer nl2 = new NeuralLayer(1, 8);
         //nl2.synapsWeights = new SimpleMatrix(l2);
         TwoLayerNN Anna = new TwoLayerNN(nl1, nl2);
         
@@ -75,21 +75,25 @@ public class NeuralNetworkTestbed {
         
         double[][] tS = new double[100][3];
         double[][] tA = new double[tS.length][1];
-        for(int i = 0; i < tS.length; i++) {
+        for(int i = 0; i < tS.length/2; i++) {
             Random rand = new Random();
             double x = rand.nextDouble();
             double y = rand.nextDouble();
-
+            while(x+y > 1) {
+                x = rand.nextDouble();
+                y = rand.nextDouble();
+            }
+            
             tS[i][0] = x;
             tS[i][1] = y;
             tS[i][2] = 1;
             
-            tA[i][0] = (x+y)/2;
+            tA[i][0] = x+y;
             //System.out.println(i + ": " + tS[i][0] + " AVG " + tS[i][1] + " = " + tA[i][0]);
         }
         
         
-        /*
+        
         for(int i = tS.length/2; i < tS.length; i++) {
             Random rand = new Random();
             double x = rand.nextDouble();
@@ -104,8 +108,8 @@ public class NeuralNetworkTestbed {
             
             tA[i][0] = x-y;
             
-            System.out.println(i + ": " + tS[i][0] + "-" + tS[i][1] + " = " + tA[i][0]);
-        }*/
+            //System.out.println(i + ": " + tS[i][0] + "-" + tS[i][1] + " = " + tA[i][0]);
+        }
         
         
         
@@ -120,7 +124,7 @@ public class NeuralNetworkTestbed {
         Anna.PrintsynapsWeights();
         
         System.out.println("Let Anna think about {1, 1, 0} -> ? ");
-        ThinkReturns ret = Anna.think(new SimpleMatrix(new double[][] {{0.3, 0.5 ,1}}));
+        ThinkReturns ret = Anna.think(new SimpleMatrix(new double[][] {{0.5, 0.2 ,0}}));
         System.out.println(ret.matrix2);
         
     }

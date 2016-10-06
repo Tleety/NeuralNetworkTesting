@@ -15,6 +15,7 @@ public class TwoLayerNN {
     public void train(SimpleMatrix trainingSet, SimpleMatrix trainingAnswer, int iterations) {
         for(int i = 0; i < iterations; i++) {
             ThinkReturns tr = think(trainingSet);
+            
             SimpleMatrix NL1Out = tr.matrix1;
             SimpleMatrix NL2Out = tr.matrix2;
 
@@ -22,11 +23,8 @@ public class TwoLayerNN {
             SimpleMatrix NL2Delta = NL2Error.elementMult(sigmoidDeriv(NL2Out));
             
             SimpleMatrix NL1Error = NL2Delta.mult(NL2.synapsWeights.transpose());
+            SimpleMatrix NL1Delta = sigmoidDeriv(NL1Out).elementMult(NL1Error);
             
-            SimpleMatrix mm = sigmoidDeriv(NL1Out);
-            SimpleMatrix nn = NL1Error;
-            SimpleMatrix NL1Delta = mm.elementMult(nn);
-            // Right untill here.
             SimpleMatrix NL1Adjustment = trainingSet.transpose().mult(NL1Delta);
             SimpleMatrix NL2Adjustment = NL1Out.transpose().mult(NL2Delta);
 

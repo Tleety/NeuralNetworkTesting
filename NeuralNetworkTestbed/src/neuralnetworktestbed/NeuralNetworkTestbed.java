@@ -1,6 +1,7 @@
 package neuralnetworktestbed;
 import org.ejml.data.*;
 import org.ejml.simple.*;
+import java.util.Random;
 
 public class NeuralNetworkTestbed {
 
@@ -8,7 +9,7 @@ public class NeuralNetworkTestbed {
     public static void main(String[] args) {
         
         //RunSimpleNN(10000);
-        RunTwoLayerNN(60000);
+        RunTwoLayerNN(100000);
     }
     
     private static void RunSimpleNN(int iterations) {
@@ -64,30 +65,54 @@ public class NeuralNetworkTestbed {
         };
         
         NeuralLayer nl1 = new NeuralLayer(4, 3);
-        nl1.synapsWeights = new SimpleMatrix(l1);
+        //nl1.synapsWeights = new SimpleMatrix(l1);
         NeuralLayer nl2 = new NeuralLayer(1, 4);
-        nl2.synapsWeights = new SimpleMatrix(l2);
+        //nl2.synapsWeights = new SimpleMatrix(l2);
         TwoLayerNN Anna = new TwoLayerNN(nl1, nl2);
         
         System.out.println("Random weights: ");
         Anna.PrintsynapsWeights();
         
-        double[][] tS = new double[][] {
-            {0, 0, 1},
-            {0, 1, 1},
-            {1, 0, 1},
-            {0, 1, 0},
-            {1, 0, 0},
-            {1, 1, 1},
-            {0, 0, 0}
-        };
+        double[][] tS = new double[100][3];
+        double[][] tA = new double[tS.length][1];
+        for(int i = 0; i < tS.length; i++) {
+            Random rand = new Random();
+            double x = rand.nextDouble();
+            double y = rand.nextDouble();
+
+            tS[i][0] = x;
+            tS[i][1] = y;
+            tS[i][2] = 1;
+            
+            tA[i][0] = (x+y)/2;
+            //System.out.println(i + ": " + tS[i][0] + " AVG " + tS[i][1] + " = " + tA[i][0]);
+        }
+        
+        
+        /*
+        for(int i = tS.length/2; i < tS.length; i++) {
+            Random rand = new Random();
+            double x = rand.nextDouble();
+            double y = rand.nextDouble();
+            while(x-y < 0) {
+                x = rand.nextDouble();
+                y = rand.nextDouble();
+            }
+            tS[i][0] = x;
+            tS[i][1] = y;
+            tS[i][2] = 0;
+            
+            tA[i][0] = x-y;
+            
+            System.out.println(i + ": " + tS[i][0] + "-" + tS[i][1] + " = " + tA[i][0]);
+        }*/
+        
+        
+        
         SimpleMatrix trainingSet = new SimpleMatrix(tS);
 
-        double[][] tA = new double[][] {
-            {0, 1, 1, 1, 1, 0, 0}
-        };
         SimpleMatrix trainingAnswers = new SimpleMatrix(tA);
-        trainingAnswers = trainingAnswers.transpose();
+        //trainingAnswers = trainingAnswers.transpose();
         
         Anna.train(trainingSet, trainingAnswers, iterations);
         
@@ -95,7 +120,7 @@ public class NeuralNetworkTestbed {
         Anna.PrintsynapsWeights();
         
         System.out.println("Let Anna think about {1, 1, 0} -> ? ");
-        ThinkReturns ret = Anna.think(new SimpleMatrix(new double[][] {{1,1,0}}));
+        ThinkReturns ret = Anna.think(new SimpleMatrix(new double[][] {{0.3, 0.5 ,1}}));
         System.out.println(ret.matrix2);
         
     }

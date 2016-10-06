@@ -14,28 +14,24 @@ public class TwoLayerNN {
     
     public void train(SimpleMatrix trainingSet, SimpleMatrix trainingAnswer, int iterations) {
         for(int i = 0; i < iterations; i++) {
-            for(int f = 0; f < trainingSet.numRows(); f++) {
-                SimpleMatrix thisSet = trainingSet.extractVector(true, f);
-                double thisAnswer = trainingAnswer.get(f);
-                
-                ThinkReturns tr = think(thisSet);
-                SimpleMatrix NL1Out = tr.matrix1;
-                SimpleMatrix NL2Out = tr.matrix2;
-                
-                double NL2Error = thisAnswer - NL2Out.get(0, 0);
-                double NL2Delta = NL2Error * sigmoidDeriv(NL2Out.get(0, 0));
-                
-                SimpleMatrix NL1Error = NL2.synapsWeights.scale(NL2Delta);
-                SimpleMatrix mm = sigmoidDeriv(NL1Out);
-                SimpleMatrix NL1Delta = NL1Error.transpose().elementMult(mm);
-                // Right untill here.
-                SimpleMatrix TA = trainingSet.transpose();
-                SimpleMatrix NL1Adjustment = TA.mult(NL1Delta);
-                SimpleMatrix NL2Adjustment = NL1Out.transpose().scale(NL2Delta);
-                
-                NL1.synapsWeights.plus(NL1Adjustment);
-                NL2.synapsWeights.plus(NL2Adjustment);
-            }
+            ThinkReturns tr = think(trainingSet);
+            SimpleMatrix NL1Out = tr.matrix1;
+            SimpleMatrix NL2Out = tr.matrix2;
+
+            SimpleMatrix NL2Error = trainingAnswer.minus(NL2Out);
+            SimpleMatrix NL2Delta = NL2Error.elementMult(sigmoidDeriv(NL2Out));
+            
+            SimpleMatrix NL1Error = NL2Delta.mult(NL2.synapsWeights.transpose());
+            
+            SimpleMatrix mm = sigmoidDeriv(NL1Out);
+            SimpleMatrix nn = NL1Error;
+            SimpleMatrix NL1Delta = mm.elementMult(nn);
+            // Right untill here.
+            SimpleMatrix NL1Adjustment = trainingSet.transpose().mult(NL1Delta);
+            SimpleMatrix NL2Adjustment = NL1Out.transpose().mult(NL2Delta);
+
+            NL1.synapsWeights = NL1.synapsWeights.plus(NL1Adjustment);
+            NL2.synapsWeights = NL2.synapsWeights.plus(NL2Adjustment);
         }
     }
     
@@ -56,13 +52,14 @@ public class TwoLayerNN {
     }
     
     private SimpleMatrix sigmoid(SimpleMatrix m) {
-        for(int row = 0; row < m.numRows(); row++) {
-            for(int col = 0; col < m.numCols(); col++) {
-                double x = m.get(row, col);
-                m.set(row, col, sigmoid(x));
+        SimpleMatrix returnMat = m.copy();
+        for(int row = 0; row < returnMat.numRows(); row++) {
+            for(int col = 0; col < returnMat.numCols(); col++) {
+                double x = returnMat.get(row, col);
+                returnMat.set(row, col, sigmoid(x));
             }
         }
-        return m;
+        return returnMat;
     }
     
     private double sigmoidDeriv(double x) {
@@ -70,12 +67,13 @@ public class TwoLayerNN {
     }
     
     private SimpleMatrix sigmoidDeriv(SimpleMatrix m) {
-        for(int row = 0; row < m.numRows(); row++) {
-            for(int col = 0; col < m.numCols(); col++) {
-                double x = m.get(row, col);
-                m.set(row, col, sigmoidDeriv(x));
+        SimpleMatrix returnMat = m.copy();
+        for(int row = 0; row < returnMat.numRows(); row++) {
+            for(int col = 0; col < returnMat.numCols(); col++) {
+                double x = returnMat.get(row, col);
+                returnMat.set(row, col, sigmoidDeriv(x));
             }
         }
-        return m;
+        return returnMat;
     }
 }

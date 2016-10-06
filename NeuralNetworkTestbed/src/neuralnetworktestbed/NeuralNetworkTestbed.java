@@ -11,44 +11,53 @@ public class NeuralNetworkTestbed {
         twoLayeredNN.PrintSynapseWeights();
         
 
-        double[][] TISet = new double[][] 
-        {
-            {0, 0, 1},
-            {0, 1, 1},
-            {1, 0, 1},
-            {0, 1, 0},
-            {1, 0, 0},
-            {1, 1, 1},
-            {0, 0, 0}
+         double[][] tS = new double[][] {
+            //Addition
+            {0.0, 0.2, 1},
+            {0.1, 0.2, 1},
+            {0.2, 0.1, 1},
+            {0.3, 0.6, 1},
+            {0.4, 0.3, 1},
+            {0.5, 0.1, 1},
+            {0.6, 0.3, 1},
+            {0.7, 0.2, 1},
+            {0.8, 0.2, 1},
+            {0.9, 0.0, 1},
+            //Subtraction
+            {0.0, 0.0, 0},
+            {0.1, 0.1, 0},
+            {0.2, 0.1, 0},
+            {0.3, 0.1, 0},
+            {0.4, 0.3, 0},
+            {0.5, 0.1, 0},
+            {0.6, 0.3, 0},
+            {0.7, 0.2, 0},
+            {0.8, 0.5, 0},
+            {0.9, 0.3, 0},
         };
-        double[][] TA = new double[][]
-        {
-            {0},
-            {1},
-            {1},
-            {1},
-            {1},
-            {0},
-            {0}
+        SimpleMatrix trainingSet = new SimpleMatrix(tS);
+ 
+        double[][] tA = new double[][] {
+            { 0.2,  0.3,  0.3,  0.9,  0.7,  0.6,  0.9,  0.9,  1.0,  0.9,  //Addition
+              0.0,  0.0,  0.1,  0.1,  0.1,  0.4,  0.3,  0.5,  0.3,  0.6 } //Subtraction
         };
         
-        
-        SimpleMatrix trainingInputSet = new SimpleMatrix(TISet);
-        SimpleMatrix trainingAnswers = new SimpleMatrix(TA);
+        SimpleMatrix trainingInputSet = new SimpleMatrix(tS);
+        SimpleMatrix trainingAnswers = new SimpleMatrix(tA);
         
         System.out.println("Training our simple neural network over 10 000 iterations");
         
-        twoLayeredNN.train(trainingInputSet, trainingAnswers, 6000);
+        twoLayeredNN.train(trainingInputSet, trainingAnswers.transpose(), 6000);
         
         System.out.print("Weights After training: ");
         twoLayeredNN.PrintSynapseWeights();
         
         System.out.println("Considering new situation [1, 0, 0] -> ???");
         
-        double[][] t = new double[][] {{1,1,0}};
+        double[][] t = new double[][] {{0.3,0.2,0}};
         SimpleMatrix thinkSet = new SimpleMatrix(t);
         
-        System.out.println(twoLayeredNN.think(thinkSet).outputLayer2);
+        twoLayeredNN.think(thinkSet).outputLayer2.print();
         
     }
 

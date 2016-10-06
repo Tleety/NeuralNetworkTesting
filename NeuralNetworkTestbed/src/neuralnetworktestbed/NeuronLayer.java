@@ -15,7 +15,7 @@ public class NeuronLayer {
     
     public NeuronLayer(int numberOfNeurons, int inputsPerNeuron) {
         
-        m_Random = new Random(0);
+        m_Random = new Random();
         
         double[][] startWeights = new double[inputsPerNeuron][numberOfNeurons];
         

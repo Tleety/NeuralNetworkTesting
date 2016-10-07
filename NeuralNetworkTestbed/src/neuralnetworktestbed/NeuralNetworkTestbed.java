@@ -1,13 +1,15 @@
 package neuralnetworktestbed;
 import org.ejml.data.*;
 import org.ejml.simple.*;
-import java.util.Scanner;
 import java.text.DecimalFormat;
+
+import java.util.Random;
 
 public class NeuralNetworkTestbed {
 
     public static void main(String[] args) {
-        Scanner in = new Scanner(System.in);
+        
+        Random random = new Random();
         
         TwoLayeredNN twoLayeredNN = new TwoLayeredNN();
         
@@ -55,34 +57,33 @@ public class NeuralNetworkTestbed {
         
         System.out.print("Weights After training: ");
         twoLayeredNN.PrintSynapseWeights();
-        
-        System.out.println("Considering new situation [0.3,0.2,0] -> ???");
-        
-        double[][] t = new double[][] {{0.3,0.2,0}};
+        double totalError = 0.0;
+        int iterations = 1000;
+        for(int i = 0; i < iterations; i++) {
+            
+            double z, x, y;
+            do {
+            x = random.nextDouble();
+            y = random.nextDouble();
+            
+            z = x - y;
+            
+            }while(z > 1 || z < 0);
+            
+        double[][] t = new double[][] {{x,y,0}};
         SimpleMatrix thinkSet = new SimpleMatrix(t);
         
-        System.out.println("Answer: " + new DecimalFormat("#0.000000").format(twoLayeredNN.think(thinkSet).outputLayer2.get(0)));
-        double x = 1, y = 1, z = 1;
         
-                
-      while(true) {
-          x = in.nextDouble();
-          if(x > 0.0 || x > 1.0)
-              break;
-          
-          y = in.nextDouble();
-          if(y > 0.0 || y > 1.0)
-              break;
-          
-          z = in.nextDouble();
-          if(z > 0.0 || z > 1.0)
-              break;
-      
-          double[][] tx = new double[][] {{x,y,z}};
-          SimpleMatrix ts = new SimpleMatrix(tx);
-      
-          System.out.println("Answer: " + new DecimalFormat("#0.000000").format(twoLayeredNN.think(ts).outputLayer2.get(0)));
-      }
+        double output = twoLayeredNN.think(thinkSet).outputLayer2.get(0);
+        
+        totalError += Math.abs(output - z);
+        
+        System.out.println(x + " + " + y + " = "+ new DecimalFormat("#0.000000").format(output) + " Answer = " + z);
+        
+        }
+        
+        System.out.println("avg error: " + new DecimalFormat("#0.000000").format(totalError/iterations));
+        
     }
 
 }

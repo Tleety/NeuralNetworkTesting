@@ -10,8 +10,8 @@ public class TwoLayeredNN {
     NeuronLayer m_Layer2;
     
     public TwoLayeredNN() {
-        m_Layer1 = new NeuronLayer(10, 3);
-        m_Layer2 = new NeuronLayer(1, 10);
+        m_Layer1 = new NeuronLayer(8, 3);
+        m_Layer2 = new NeuronLayer(1, 8);
     }
 
  private double sigmoid(double x) {

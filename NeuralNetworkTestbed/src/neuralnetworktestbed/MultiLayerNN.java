@@ -112,7 +112,7 @@ public class MultiLayerNN {
 
 //Really need to change so that layers are placed and read in the opposite order.
 class WeightsManager {
-    List<NeuronLayer> Layers = new ArrayList<NeuronLayer>();
+    List<NeuronLayer2> Layers = new ArrayList<NeuronLayer2>();
     int Inputs = 0;
     WeightsManager(int inputs) {
             Inputs = inputs;
@@ -128,10 +128,10 @@ class WeightsManager {
         if(Layers.size() == 0) {
             addFirstLayer();
         }
-        NeuronLayer newLayer = new NeuronLayer(Neurons, Layers.get(pos).synapsWeights.numRows());
+        NeuronLayer2 newLayer = new NeuronLayer2(Neurons, Layers.get(pos).synapsWeights.numRows());
         Layers.add(pos, newLayer);
         if(pos != 0) {
-            NeuronLayer reFittedOldLayer = new NeuronLayer(Layers.get(pos-1).synapsWeights.numRows(), Neurons);
+            NeuronLayer2 reFittedOldLayer = new NeuronLayer2(Layers.get(pos-1).synapsWeights.numRows(), Neurons);
             Layers.get(pos-1).synapsWeights = reFittedOldLayer.synapsWeights;
         }
         
@@ -151,14 +151,14 @@ class WeightsManager {
             int LowerNeurons, HigherNeurons;
             LowerNeurons = Inputs;
             HigherNeurons = Layers.get(pos-1).synapsWeights.numRows();
-            NeuronLayer NewHigher = new NeuronLayer(HigherNeurons, LowerNeurons);
+            NeuronLayer2 NewHigher = new NeuronLayer2(HigherNeurons, LowerNeurons);
             Layers.remove(pos);
             Layers.get(pos-1).synapsWeights = NewHigher.synapsWeights;
         } else {
             int LowerNeurons, HigherNeurons;
             LowerNeurons = Layers.get(pos+1).synapsWeights.numRows();
             HigherNeurons = Layers.get(pos-1).synapsWeights.numRows();
-            NeuronLayer NewHigher = new NeuronLayer(HigherNeurons, LowerNeurons);
+            NeuronLayer2 NewHigher = new NeuronLayer2(HigherNeurons, LowerNeurons);
             Layers.remove(pos);
             Layers.get(pos-1).synapsWeights = NewHigher.synapsWeights;
         }
@@ -167,13 +167,13 @@ class WeightsManager {
     }
     
     private void addFirstLayer() {
-        Layers.add(new NeuronLayer(1, Inputs));
+        Layers.add(new NeuronLayer2(1, Inputs));
         
     }
     
     public void print() {
         int i = 0;
-        for(NeuronLayer nl : Layers) {
+        for(NeuronLayer2 nl : Layers) {
             System.out.println(i + ":" + nl.synapsWeights);
             i++;
         }
@@ -186,7 +186,7 @@ class WeightsManager {
     public void print(String s) {
         System.out.println(s);
         int i = 0;
-        for(NeuronLayer nl : Layers) {
+        for(NeuronLayer2 nl : Layers) {
             System.out.println(i + ":" + nl.synapsWeights);
             i++;
         }
@@ -199,7 +199,7 @@ class WeightsManager {
     
     public void printSize() {
         int i = 0;
-        for(NeuronLayer nl : Layers) {
+        for(NeuronLayer2 nl : Layers) {
             System.out.println(i + ":" + "[" + nl.synapsWeights.numRows() + ", " + nl.synapsWeights.numCols() + "]");
             i++;
         }
@@ -212,7 +212,7 @@ class WeightsManager {
     public void printSize(String s) {
         System.out.println(s);
         int i = 0;
-        for(NeuronLayer nl : Layers) {
+        for(NeuronLayer2 nl : Layers) {
             System.out.println(i + ":" + "[" + nl.synapsWeights.numRows() + ", " + nl.synapsWeights.numCols() + "]");
             i++;
         }
@@ -224,16 +224,10 @@ class WeightsManager {
     }
 }
 
-class NeuronLayer {
+class NeuronLayer2 {
     SimpleMatrix synapsWeights;
-    NeuronLayer(int Neurons, int SynapsesFromLastLayer) {
+    NeuronLayer2(int Neurons, int SynapsesFromLastLayer) {
         Random rand = new Random();
         synapsWeights = SimpleMatrix.random(Neurons, SynapsesFromLastLayer, -1, 1, rand);
-    }
-}
-
-class NeuronOutputs {
-    NeuronOutputs(){
-        
     }
 }

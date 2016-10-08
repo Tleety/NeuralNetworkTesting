@@ -1,8 +1,6 @@
 package neuralnetworktestbed;
-import org.ejml.data.*;
 import org.ejml.simple.*;
 import java.text.DecimalFormat;
-import java.util.LinkedList;
 import java.util.Random;
 
 public class NeuralNetworkTestbed {
@@ -183,10 +181,11 @@ public static void RunMultiLayeredPlus() {
         
         MultiLayeredNN multiLayeredNN = new MultiLayeredNN();
         
-      //  System.out.print("Weights before training: ");
-      //  multiLayeredNN.PrintSynapseWeights();
+       // System.out.print("Weights before training: ");
+       // multiLayeredNN.PrintSynapseWeights();
         
-
+       multiLayeredNN.RemoveLayer(1);     
+       
          double[][] tS = new double[][] {
             //Addition
             {0.0, 0.2, 1, 0, 0, 0},
@@ -246,12 +245,16 @@ public static void RunMultiLayeredPlus() {
         SimpleMatrix trainingInputSet = new SimpleMatrix(tS);
         SimpleMatrix trainingAnswers = new SimpleMatrix(tA);
         
-       // System.out.println("Training our simple neural network over 10 000 iterations");
+        //System.out.println("Training our simple neural network over 10 000 iterations");
         
-        multiLayeredNN.train(trainingInputSet, trainingAnswers.transpose(), 600000);
+        multiLayeredNN.train(trainingInputSet, trainingAnswers.transpose(), 50000);
         
-        //System.out.print("Weights After training: ");
-        //multiLayeredNN.PrintSynapseWeights();
+       // System.out.print("Weights After training: ");
+       // multiLayeredNN.PrintSynapseWeights();
+        
+        
+        
+        
         double totalError = 0.0;
         double ErrorAdd = 0.0, ErrorSub = 0.0, ErrorMul = 0.0, ErrorDiv = 0.0;
         int iterations = 10000;

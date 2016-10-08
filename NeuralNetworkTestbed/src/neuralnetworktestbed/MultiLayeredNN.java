@@ -1,9 +1,6 @@
 package neuralnetworktestbed;
 import org.ejml.simple.*;
-import org.ejml.data.*;
-import org.ejml.factory.*;
 import java.util.LinkedList;
-import java.util.ArrayList;
 
 public class MultiLayeredNN {
     
@@ -14,13 +11,41 @@ public class MultiLayeredNN {
     public MultiLayeredNN() {
         m_NeuronLayers = new LinkedList<NeuronLayer>();
         
-        m_NeuronLayers.add(new NeuronLayer(4, 6));
-        m_NeuronLayers.add(new NeuronLayer(3, 4));
-        m_NeuronLayers.add(new NeuronLayer(1, 3));
+        m_NeuronLayers.add(new NeuronLayer(6, 4));
+        m_NeuronLayers.add(new NeuronLayer(4, 4));
+        m_NeuronLayers.add(new NeuronLayer(4, 3));
+        m_NeuronLayers.add(new NeuronLayer(3, 1));
 
     }
+    
+    public void RemoveLayer(int i) {
+        NeuronLayer nextLayer = null;
+        NeuronLayer prevLayer = null;
+        
+        if(m_NeuronLayers.size() > i + 1) {
+            nextLayer = m_NeuronLayers.get(i+1);
+        }
+        
+        if(m_NeuronLayers.size() >= i) {
+            prevLayer = m_NeuronLayers.get(i-1);
+        }
+        
+        if(nextLayer != null && prevLayer != null) {
+            
+            if(nextLayer.m_Rows != prevLayer.m_Columns) {
+                System.out.println("Rebalancing layer " + (i + 1) + " from " + nextLayer.m_Rows + "," + nextLayer.m_Columns + " to " + prevLayer.m_Columns + "," + nextLayer.m_Columns);
+                nextLayer.Rebalance(prevLayer.m_Columns, nextLayer.m_Columns);
+            }
+        }
+        
+        m_NeuronLayers.remove(i);
+    }
+    
+    public void AddLayer(int i) {
+        
+    }
 
- private double sigmoid(double x) {
+    private double sigmoid(double x) {
         if(x > m_Cutoff) {
             return 1;
         } else if(x < -m_Cutoff) {

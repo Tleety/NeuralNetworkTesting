@@ -2,6 +2,7 @@ package neuralnetworktestbed;
 import org.ejml.data.*;
 import org.ejml.simple.*;
 import java.util.Random;
+import javafx.beans.property.SimpleMapProperty;
 
 public class NeuralNetworkTestbed {
 
@@ -74,7 +75,7 @@ public class NeuralNetworkTestbed {
         System.out.println("Random weights: ");
         Anna.PrintsynapsWeights();
         
-        double[][] tS = new double[100][3];
+        double[][] tS = new double[6][3];
         double[][] tA = new double[tS.length][1];
         for(int i = 0; i < tS.length/2; i++) {
             Random rand = new Random();
@@ -133,6 +134,25 @@ public class NeuralNetworkTestbed {
     private static void RunMultiLayerNN(int iterations) {
         
         MultiLayerNN Anna = new MultiLayerNN(3, iterations);
+        double[][] TISet = new double[][] 
+        {
+            {0, 0, 1},
+            {1, 1, 1},
+            {1, 0, 1},
+            {0, 1, 1},
+        };
+        double[][] TA = new double[][]
+        {
+            {0},
+            {1},
+            {1},
+            {0}
+        };
         
+        SimpleMatrix trainingSet = new SimpleMatrix(TISet);
+        SimpleMatrix trainingAnswers = new SimpleMatrix(TA);
+        trainingAnswers = trainingAnswers.transpose();
+        
+        Anna.think(trainingSet);
     }
 }

@@ -10,30 +10,34 @@ import java.lang.String;
 
 public class MultiLayerNN {
     
-    LayerManager Layers;
+    WeightsManager Weights;
     int Inputs, Iterations;
     
     public MultiLayerNN(int inputs, int iterations) {
         Inputs = inputs;
         Iterations = iterations;
-        Layers = new LayerManager(Inputs);
+        Weights = new WeightsManager(Inputs);
         
-        Layers.printSize("P:");
-        Layers.add(3,0);
-        Layers.add(2,1);
-        Layers.add(4,2);
-        Layers.printSize("After 3 Adds");
-        Layers.add(8,1);
-        Layers.printSize("Add 8N at 1");
-        Layers.remove(1);
-        Layers.printSize("Remove Layer1");
-
+        Weights.add(3);
+        Weights.add(2);
+ 
     }
     
+    //Train Anna with a set of inputs, answers over several iterations.
     public void trains(SimpleMatrix trainingSets, SimpleMatrix trainingAnswers, int iterations) {
         for(int i = 0; i < iterations; i++) {
             
         }
+    }
+    
+    public List<SimpleMatrix> think(SimpleMatrix inputs) {
+        List<SimpleMatrix> Results = new ArrayList<SimpleMatrix>();
+        SimpleMatrix prevOutput = inputs;
+        for(int i = Weights.Layers.size()-1; i >= 0; --i) {
+            prevOutput = prevOutput.mult(Weights.Layers.get(i).synapsWeights.transpose());
+            Results.add(prevOutput);
+        }
+        return Results;
     }
     
     private double sigmoid(double x) {
@@ -67,10 +71,11 @@ public class MultiLayerNN {
     }
 }
 
-class LayerManager {
+//Really need to change so that layers are placed and read in the opposite order.
+class WeightsManager {
     List<NeuronLayer> Layers = new ArrayList<NeuronLayer>();
     int Inputs = 0;
-    LayerManager(int inputs) {
+    WeightsManager(int inputs) {
             Inputs = inputs;
     }
     
@@ -92,6 +97,11 @@ class LayerManager {
         }
         
         return true;
+    }
+    
+    //Add a new leayer before the output.
+    public boolean add(int Neurons) {
+        return add(Neurons, 0);
     }
     
     public boolean remove(int pos) {
@@ -180,5 +190,11 @@ class NeuronLayer {
     NeuronLayer(int Neurons, int SynapsesFromLastLayer) {
         Random rand = new Random();
         synapsWeights = SimpleMatrix.random(Neurons, SynapsesFromLastLayer, -1, 1, rand);
+    }
+}
+
+class NeuronOutputs {
+    NeuronOutputs(){
+        
     }
 }

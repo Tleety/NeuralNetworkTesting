@@ -3,15 +3,14 @@ import org.ejml.simple.*;
 import org.ejml.data.*;
 import org.ejml.factory.*;
 
-
 public class TwoLayeredNN {
-
+    
     NeuronLayer m_Layer1;
     NeuronLayer m_Layer2;
     
     public TwoLayeredNN() {
-        m_Layer1 = new NeuronLayer(8, 3);
-        m_Layer2 = new NeuronLayer(1, 8);
+        m_Layer1 = new NeuronLayer(4, 3);
+        m_Layer2 = new NeuronLayer(1, 4);
     }
 
  private double sigmoid(double x) {

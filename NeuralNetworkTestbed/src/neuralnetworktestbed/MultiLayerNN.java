@@ -4,9 +4,9 @@ package neuralnetworktestbed;
 import java.util.ArrayList;
 import org.ejml.simple.*;
 import java.util.Random;
-import java.util.Arrays;
 import java.util.List;
 import java.lang.String;
+import java.util.Collections;
 
 public class MultiLayerNN {
     
@@ -18,14 +18,52 @@ public class MultiLayerNN {
         Iterations = iterations;
         Weights = new WeightsManager(Inputs);
         
-        Weights.add(3);
         Weights.add(2);
- 
+        Weights.add(4);
+        Weights.add(8);
+
+        Weights.printSize();
     }
     
     //Train Anna with a set of inputs, answers over several iterations.
-    public void trains(SimpleMatrix trainingSets, SimpleMatrix trainingAnswers, int iterations) {
+    public void train(SimpleMatrix trainingSets, SimpleMatrix trainingAnswers, int iterations) {
         for(int i = 0; i < iterations; i++) {
+            List<SimpleMatrix> Outputs = think(trainingSets);
+
+            //Backprobagate to calculate the error in each layer.
+            SimpleMatrix CLouts = Outputs.get(0);
+            SimpleMatrix NLouts = Outputs.get(1);
+            SimpleMatrix CLweights = Weights.Layers.get(0).synapsWeights;
+
+            SimpleMatrix CLerror = trainingAnswers.transpose().minus(CLouts);
+            SimpleMatrix CLdelta = CLerror.elementMult(sigmoidDeriv(CLouts));
+            SimpleMatrix CLadjustment = NLouts.transpose().mult(CLdelta);
+            CLweights = CLweights.transpose().plus(CLadjustment);
+            
+            CLouts = NLouts;
+            
+            for(int l = 1; l < Outputs.size()-1; l++) {
+                //Calc adjustments for the other layers.
+                NLouts = Outputs.get(l+1);
+                CLerror = CLdelta.mult(CLweights.transpose());
+                
+                CLweights = Weights.Layers.get(l).synapsWeights;
+                
+                CLdelta = sigmoidDeriv(CLouts).elementMult(CLerror);
+                CLadjustment = NLouts.transpose().mult(CLdelta);
+                
+                CLweights = CLweights.plus(CLadjustment);
+                
+                CLouts = NLouts;
+            }
+            
+            NLouts = trainingSets;
+
+            CLerror = CLdelta.mult(CLweights.transpose());
+            CLdelta = sigmoidDeriv(CLouts).elementMult(CLerror);
+            CLadjustment = NLouts.transpose().mult(CLdelta);
+            CLweights = Weights.Layers.get(0).synapsWeights;
+            CLweights = CLweights.plus(CLadjustment);
             
         }
     }
@@ -37,6 +75,7 @@ public class MultiLayerNN {
             prevOutput = prevOutput.mult(Weights.Layers.get(i).synapsWeights.transpose());
             Results.add(prevOutput);
         }
+        Collections.reverse(Results);
         return Results;
     }
     
@@ -82,7 +121,7 @@ class WeightsManager {
     //add a layer at position [pos] with [Neurons] neurons. 
     //The layers at and after pos will get moved back 1 position (closer to inserted values).
     public boolean add(int Neurons, int pos) {
-        //TODO: So that the first layer(Closest to inputs) can be removed.
+        //TODO: So that the layer closest to inputs can be removed.
         if(pos < 0 || pos > Layers.size()) {
             return false;
         }

@@ -19,17 +19,18 @@ public class TwoLayerNN {
             SimpleMatrix NL1Out = tr.matrix1;
             SimpleMatrix NL2Out = tr.matrix2;
 
+            //top layer
             SimpleMatrix NL2Error = trainingAnswer.minus(NL2Out);
             SimpleMatrix NL2Delta = NL2Error.elementMult(sigmoidDeriv(NL2Out));
+            SimpleMatrix NL2Adjustment = NL1Out.transpose().mult(NL2Delta);
+            NL2.synapsWeights = NL2.synapsWeights.plus(NL2Adjustment);
             
+            //Bottom layer
             SimpleMatrix NL1Error = NL2Delta.mult(NL2.synapsWeights.transpose());
             SimpleMatrix NL1Delta = sigmoidDeriv(NL1Out).elementMult(NL1Error);
-            
             SimpleMatrix NL1Adjustment = trainingSet.transpose().mult(NL1Delta);
-            SimpleMatrix NL2Adjustment = NL1Out.transpose().mult(NL2Delta);
-
             NL1.synapsWeights = NL1.synapsWeights.plus(NL1Adjustment);
-            NL2.synapsWeights = NL2.synapsWeights.plus(NL2Adjustment);
+            
         }
     }
     

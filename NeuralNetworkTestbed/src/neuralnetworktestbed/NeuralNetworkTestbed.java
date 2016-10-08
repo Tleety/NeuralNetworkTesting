@@ -136,16 +136,16 @@ public class NeuralNetworkTestbed {
         MultiLayerNN Anna = new MultiLayerNN(3, iterations);
         double[][] TISet = new double[][] 
         {
-            {0, 0, 1},
-            {1, 1, 1},
-            {1, 0, 1},
+            //{0, 0, 1},
+            //{1, 1, 1},
+            //{1, 0, 1},
             {0, 1, 1},
         };
         double[][] TA = new double[][]
         {
-            {0},
-            {1},
-            {1},
+            //{0},
+            //{1},
+            //{1},
             {0}
         };
         
@@ -153,6 +153,9 @@ public class NeuralNetworkTestbed {
         SimpleMatrix trainingAnswers = new SimpleMatrix(TA);
         trainingAnswers = trainingAnswers.transpose();
         
+        Anna.train(trainingSet, trainingAnswers, iterations);
+        
         Anna.think(trainingSet);
+        
     }
 }

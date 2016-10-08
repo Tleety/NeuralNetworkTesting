@@ -9,7 +9,8 @@ public class NeuralNetworkTestbed {
     public static void main(String[] args) {
         
         //RunSimpleNN(10000);
-        RunTwoLayerNN(1000);
+        //RunTwoLayerNN(1000);
+        RunMultiLayerNN(1);
     }
     
     private static void RunSimpleNN(int iterations) {
@@ -129,5 +130,9 @@ public class NeuralNetworkTestbed {
         
     }
 
-    
+    private static void RunMultiLayerNN(int iterations) {
+        
+        MultiLayerNN Anna = new MultiLayerNN(3, iterations);
+        
+    }
 }
